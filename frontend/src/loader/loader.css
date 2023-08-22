@@ -1,0 +1,52 @@
+.body-main {
+    display: flex;
+    justify-content: center;
+    font-size: 1rem;
+    align-items: center;
+    height: 30vh;
+    width: 30vw;
+}
+
+#container {
+    position: relative;
+    display: flex;
+    height: 100px;
+    width: 100px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+#container .reverse-round {
+    border-radius: 50%;
+    border: 10px solid transparent;
+    border-right-color: black;
+    border-left-color: black;
+    margin: 10px;
+    position: absolute;
+}
+
+#circle1 {
+    height: 250px;
+    width: 250px;
+}
+
+#circle2 {
+    height: 200px;
+    width: 200px;
+}
+
+#circle3 {
+    height: 150px;
+    width: 150px;
+}
+
+#circle4 {
+    height: 100px;
+    width: 100px;
+}
+
+#circle5 {
+    height: 50px;
+    width: 50px;
+}

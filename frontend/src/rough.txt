@@ -1,0 +1,129 @@
+const express = require("express");
+const app = express();
+const axios = require("axios");
+const cors = require("cors");
+
+require("dotenv").config();
+app.use(express.json());
+app.use(cors());
+
+
+const {extractPlaylistIdFromUrl,parseISO8601ToSeconds,formatSecondsToTime} = require('./utils/functions')
+const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY
+const port = 4000;
+
+let youtubeLink = null;
+let playlistId = null;
+let videoID = [];
+
+
+function getData(id, pageToken = null) {
+  const maxResults = 150;
+
+  return axios.get("https://youtube.googleapis.com/youtube/v3/playlistItems", {
+    params: {
+      part: "contentDetails",
+      maxResults: maxResults,
+      pageToken: pageToken,
+      playlistId: id,
+      key: YOUTUBE_API_KEY,
+    },
+    headers: {
+      Accept: "application/json",
+    },
+  });
+}
+
+
+
+async function getVideoDetails(videoIds) {
+  const fetchedVideoDuration = [];
+
+  for (const videoId of videoIds) {
+    try {
+      const videoResponse = await axios.get(
+        "https://youtube.googleapis.com/youtube/v3/videos",
+        {
+          params: {
+            part: "snippet,contentDetails",
+            id: videoId,
+            key: YOUTUBE_API_KEY,
+          },
+          headers: {
+            Accept: "application/json",
+          },
+        }
+      );
+
+      const videoItem = videoResponse.data.items[0];
+      const contentDetails = videoItem.contentDetails;
+      const duration = contentDetails.duration; // This is in ISO 8601 format
+      const formattedDuration = parseISO8601ToSeconds(duration);
+
+      fetchedVideoDuration.push(formattedDuration);
+    } catch (error) {
+      console.error("Error fetching video details:", error);
+    }
+  }
+
+  const totalPlaylistSeconds = fetchedVideoDuration.reduce((total, currentValue) => total + currentValue, 0);
+  let totalPlaylistTime = formatSecondsToTime(totalPlaylistSeconds)
+  console.log(totalPlaylistTime, "--->")
+  return totalPlaylistTime
+}
+
+
+app.post('/store-link', async (req, res) => {
+  const { link } = req.body;
+  youtubeLink = link;
+  res.status(200).json({ message: "Link stored successfully" });
+
+})
+
+app.get("/playlist-length", async (req, res) => {
+  try {
+    playlistId = extractPlaylistIdFromUrl(youtubeLink)
+    const response = await getData(playlistId);
+    const responseData = response.data;
+
+    responseData.items.forEach((item) => {
+      const videoId = item.contentDetails.videoId;
+      videoID.push(videoId);
+    });
+
+    const nextPageToken = responseData.nextPageToken;
+    if (nextPageToken) {
+      // Make another request for the next page
+      const nextResponse = await getData(playlistId, nextPageToken);
+      responseData.items = responseData.items.concat(nextResponse.data.items);
+      nextResponse.data.items.forEach((item) => {
+        const videoId = item.contentDetails.videoId;
+        videoID.push(videoId);
+      });
+    }
+    const totalPlaylistTime = await getVideoDetails(videoID); // Calculate totalPlaylistTime
+    res.json({totalPlaylistTime});
+  } catch (error) {
+    console.error("Error fetching playlist items:", error);
+    res
+      .status(error.response?.status || 500)
+      .json({ error: "An error occurred" });
+  }
+});
+
+app.listen(port, () => {
+  console.log("Server listening on port " + port);
+});
+
+
+
+ <div>
+      <label>YouTube Link:</label>
+      <input
+        type="text"
+        value={youtubeLink}
+        onChange={(event) => setYoutubeLink(event.target.value)}
+      />
+      <button onClick={handleSubmit}>Submit</button>
+      <p>Total duration: {totalDurations}</p>
+    </div>
