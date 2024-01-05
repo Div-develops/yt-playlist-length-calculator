@@ -8,7 +8,6 @@ function Home() {
   const [youtubeLink, setYoutubeLink] = useState("");
   const [loading, setLoading] = useState(false);
   const [totalDurations, setTotalDurations] = useState("");
-  const [erroMsg, setErrorMsg] = useState("");
 
   const handleSubmit = () => {
     setTotalDurations("");
