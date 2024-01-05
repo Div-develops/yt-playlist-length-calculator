@@ -56,11 +56,11 @@ function Home() {
         <p className="head-font" style = {{margin:"0px"}}>Length calculator</p>
         <div ontouchstart="">
           <div class="button">
-            {loading ? <Loader /> : (youtubeLink == "" ? <button disabled>Analyse</button> :<button onClick={handleSubmit}>Analyse</button>)}
+            {loading ? <Loader /> : (youtubeLink === "" ? <button disabled>Analyse</button> :<button onClick={handleSubmit}>Analyse</button>)}
            
           </div>
         </div>
-        {totalDurations != "" && (<p className="head-font" style={{ fontSize: "40px", fontFamily:"Ubuntu Mono"}}>Total duration: {totalDurations}</p> )}
+        {totalDurations !== "" && (<p className="head-font" style={{ fontSize: "40px", fontFamily:"Ubuntu Mono"}}>Total duration: {totalDurations}</p> )}
 
       </div>
     </div>
