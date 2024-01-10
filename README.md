@@ -30,7 +30,7 @@ To run the YouTube Playlist Length Calculator locally:
 
 
 4. Return to the main project directory.
-``` ``` cd ..
+``` cd ``` 
 
 5. Install dependencies for the backend (Node.js).
 ``` cd server npm install``` 
