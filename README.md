@@ -3,6 +3,9 @@
 **Overview**
 The *YouTube Playlist Length Calculator* is a user-friendly tool designed with React for the frontend and Node.js for the backend. This calculator helps users estimate the total duration of a YouTube playlist, providing a convenient way to plan video marathons or manage viewing time.
 
+<img width="778" alt="image" src="https://github.com/Div-develops/yt-playlist-length-calculator/assets/75534560/22065332-b7e6-47b9-ab49-532e064e5a4e">
+
+
 **Features**
 - **Input Playlist URL:** Simply provide the URL of the YouTube playlist you want to analyze.
 - **Accurate Duration Calculation:** The calculator fetches video durations from the playlist and accurately calculates the total time.
