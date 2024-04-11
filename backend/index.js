@@ -17,24 +17,35 @@ const port = 4000;
 let youtubeLink = null;
 let playlistId = null;
 
-
+/* getData returns a pending promise that the caller can resolve.
+Response will contains playlist data like videoIDs */
 function getData(id, pageToken = null) {
   const maxResults = 150;
+  try {
+    return axios.get("https://youtube.googleapis.com/youtube/v3/playlistItems", {
+      params: {
+        part: "contentDetails",
+        maxResults: maxResults,
+        pageToken: pageToken,
+        playlistId: id,
+        key: YOUTUBE_API_KEY,
+      },
+      headers: {
+        Accept: "application/json",
+      },
+    });
+  }
+  
+  
+  /* !!!Still to add in frontend*/
+  catch {
+    console.error("Error in getting video Id's")
+    return "Enter valid playlist URL"
+  }
 
-  return axios.get("https://youtube.googleapis.com/youtube/v3/playlistItems", {
-    params: {
-      part: "contentDetails",
-      maxResults: maxResults,
-      pageToken: pageToken,
-      playlistId: id,
-      key: YOUTUBE_API_KEY,
-    },
-    headers: {
-      Accept: "application/json",
-    },
-  });
 }
 
+/*getVideoDetails takes a video ID, uses the YouTube API to fetch metadata, extracts the duration, converts it to seconds, and returns the total length of that video in seconds. This allows the calling code to sum up durations across multiple videos to calculate total playlist time.*/
 async function getVideoDetails(videoId) {
   try {
     const videoResponse = await axios.get(
@@ -58,17 +69,15 @@ async function getVideoDetails(videoId) {
     console.log("Video duration for videoId", videoId, ":", formattedDuration);
 
     return formattedDuration;
-  } catch (error) {
-    // console.error("Error fetching video details:", error);
-    console.error("Error fetching video details for videoId", videoId, ":", error);
 
-    // You might want to handle or log the error further
-    throw error; // Re-throw the error to be caught in the calling function
+  } catch (error) {
+    console.error("Error fetching video details for videoId", videoId, ":", error);
+    throw error; 
   }
 }
 
 
-
+/* gets playlist link from frontend and store it in a global variable */
 app.post('/store-link', async (req, res) => {
   const { link } = req.body;
   youtubeLink = link;
@@ -76,6 +85,15 @@ app.post('/store-link', async (req, res) => {
 
 })
 
+/*The code first extracts the playlist ID from the youtubeLink variable, which contains a full YouTube playlist URL that was previously stored.
+
+It then calls the getVideoIds function, passing in the playlist ID. This asynchronously fetches all the video IDs in the playlist.
+
+Next, it calls getPlaylistTotalDuration, passing the array of video IDs. This sums up the individual durations of each video to get the total playlist duration.
+
+The total duration is formatted into a human readable time string using formatSecondsToTime.
+
+Finally, the formatted duration string is returned in the JSON response to the original request.*/
 app.get("/playlist-length", async (req, res) => {
   try {
     playlistId = extractPlaylistIdFromUrl(youtubeLink);
@@ -116,6 +134,7 @@ async function getVideoIds(playlistId) {
   return videoIds;
 }
 
+
 async function getPlaylistTotalDuration(videoIds) {
 
   let totalDurationInSeconds = 0;
@@ -135,6 +154,6 @@ async function getPlaylistTotalDuration(videoIds) {
 }
 
 
-app.listen(process.env.PORT || port, () => {
+app.listen(port, () => {
   console.log("Server listening on port ");
 });

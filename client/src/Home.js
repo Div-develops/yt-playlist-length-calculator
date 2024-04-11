@@ -3,11 +3,12 @@ import axios from "axios";
 import './home.css'
 import Loader from './loader/Spinner';
 const LINK = "https://yt-playlist-length-calculator.onrender.com";
-
 function Home() {
   const [youtubeLink, setYoutubeLink] = useState("");
   const [loading, setLoading] = useState(false);
   const [totalDurations, setTotalDurations] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
 
   const handleSubmit = () => {
     setTotalDurations("");
@@ -26,6 +27,9 @@ function Home() {
       })
       .catch((error) => {
         console.log(error.message);
+        setErrorMessage("Please enter a valid playlist link (they contain word the 'playlist')!");
+        setLoading(false); // Stop the spinner
+
       });
   };
 
@@ -38,7 +42,7 @@ function Home() {
           <span className="dot" style={{background:"#5AC05A"}}></span>
         </div>
         <div className="column middle">
-          <input type="text" className="link-input" placeholder="Enter link here" value={youtubeLink}
+          <input type="text" className="link-input" placeholder='Please enter the playlist link and not the video link...Link should contain the word "playlist".' value={youtubeLink}
             onChange={(event) => setYoutubeLink(event.target.value)} />
         </div>
 
@@ -59,6 +63,8 @@ function Home() {
             {loading ? <Loader /> : (youtubeLink === "" ? <button disabled>Analyse</button> :<button onClick={handleSubmit}>Analyse</button>)}
            
           </div>
+          {errorMessage && <p className = "error-message">{errorMessage}</p>}
+
         </div>
         {totalDurations !== "" && (<p className="head-font" style={{ fontSize: "40px", fontFamily:"Ubuntu Mono"}}>Total duration: {totalDurations}</p> )}
 

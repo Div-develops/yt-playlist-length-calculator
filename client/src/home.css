@@ -60,6 +60,14 @@
     font-size: 55px;
 }
 
+.error-message{
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-size:20px;
+    color:#C70039;
+    width: fit-content;
+    background-color: lightcoral;
+    margin: auto
+;}
 
 .link-input{
     width: 100%;
