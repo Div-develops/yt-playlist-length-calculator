@@ -11,6 +11,8 @@ function Home() {
 
 
   const handleSubmit = () => {
+    setErrorMessage("");
+
     setTotalDurations("");
     setLoading(true);
     axios
@@ -23,6 +25,7 @@ function Home() {
       .then((response) => {
         setTotalDurations(response.data.formattedDuration);
         setLoading(false)
+        setErrorMessage("");
         console.log(response.data.formattedDuration);
       })
       .catch((error) => {
