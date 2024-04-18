@@ -5,9 +5,9 @@ const cors = require("cors");
 
 require("dotenv").config();
 app.use(express.json());
-app.use(cors({
-  origin: 'https://ytplaylist-length-calculator.netlify.app',
-}));
+// app.use(cors({
+//   origin: 'https://ytplaylist-length-calculator.netlify.app',
+// }));
 
 
 const { extractPlaylistIdFromUrl, parseISO8601ToSeconds, formatSecondsToTime } = require('./utils/functions')
